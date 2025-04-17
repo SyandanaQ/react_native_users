@@ -19,7 +19,7 @@ cd react_native_users
 ### 2. Backend Setup:
 Go to backend folder and install dependencies:
 ```bash
-cd backend
+cd folder_backend
 npm install
 ```
 Set up MySQL Database:
