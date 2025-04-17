@@ -14,10 +14,11 @@ This is a simple React Native CRUD app using Expo to manage a list of users (nam
 ### 1. Clone the repository:
 ```bash
 git clone https://github.com/SyandanaQ/react_native_users.git
-cd react_native_users
-
+cd react_native_users```
+```
 ### 2. Backend Setup:
 Go to backend folder and install dependencies:
 ```bash
 cd backend
 npm install
+```
