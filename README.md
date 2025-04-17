@@ -35,7 +35,7 @@ npm start
 ### 3. Frontend Setup:
 Go to frontend folder and install dependencies:
 ```bash
-cd frontend
+cd path/to/react_native_users-main
 npm install
 ```
 Configure the API URL in .env file:
