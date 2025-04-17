@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
+import Constants from 'expo-constants';
 
 interface User {
   id: number;
@@ -10,30 +11,32 @@ interface User {
 
 const Index = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [name, setName] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [editingUser, setEditingUser] = useState<User | null>(null);
 
+  const API_URL = Constants.expoConfig?.extra?.apiUrl;
+
   useEffect(() => {
-    axios.get('http://192.168.197.170:3001/users')  // Ganti dengan IP lokal baru
+    axios.get(`${API_URL}/users`)
       .then(response => {
         setUsers(response.data);
       })
       .catch(error => {
-        console.error(error);
+        console.error('Gagal mengambil data:', error);
       });
   }, []);
 
   const addUser = () => {
     if (name && email) {
-      axios.post('http://192.168.197.170:3001/users', { name, email })
+      axios.post(`${API_URL}/users`, { name, email })
         .then(response => {
           setUsers([...users, response.data]);
           setName('');
           setEmail('');
         })
         .catch(error => {
-          console.error(error);
+          console.error('Gagal menambahkan user:', error);
         });
     }
   };
@@ -46,7 +49,7 @@ const Index = () => {
 
   const saveUser = () => {
     if (editingUser) {
-      axios.put(`http://192.168.197.170:3001/users/${editingUser.id}`, { name, email })
+      axios.put(`${API_URL}/users/${editingUser.id}`, { name, email })
         .then(response => {
           const updatedUsers = users.map(user =>
             user.id === editingUser.id ? response.data : user
@@ -57,7 +60,7 @@ const Index = () => {
           setEmail('');
         })
         .catch(error => {
-          console.error(error);
+          console.error('Gagal menyimpan perubahan:', error);
         });
     }
   };
@@ -69,7 +72,6 @@ const Index = () => {
   };
 
   const deleteUser = (id: number) => {
-    // Tampilkan dialog konfirmasi sebelum menghapus
     Alert.alert(
       'Konfirmasi Hapus',
       'Apakah Anda yakin ingin menghapus user ini?',
@@ -82,12 +84,12 @@ const Index = () => {
         {
           text: 'Hapus',
           onPress: () => {
-            axios.delete(`http://192.168.197.170:3001/users/${id}`)
+            axios.delete(`${API_URL}/users/${id}`)
               .then(() => {
                 setUsers(users.filter(user => user.id !== id));
               })
               .catch(error => {
-                console.error(error);
+                console.error('Gagal menghapus user:', error);
               });
           },
         },
@@ -98,32 +100,32 @@ const Index = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Daftar Users:</Text>
-      
-      {/* Tabel Header */}
-      <View style={styles.tableHeader}>
-        <Text style={styles.columnHeader}>Nama</Text>
-        <Text style={styles.columnHeader}>Email</Text>
-        <Text style={styles.columnHeader}>Actions</Text>
-      </View>
+      <Text style={styles.header}>Daftar Users</Text>
 
-      {/* Tabel Body */}
+      {/* Daftar User */}
       <FlatList
         data={users}
         keyExtractor={(item) => item.id.toString()}
+        ListHeaderComponent={
+          <View style={styles.tableHeader}>
+            <Text style={styles.columnHeader}>Nama</Text>
+            <Text style={styles.columnHeader}>Email</Text>
+            <Text style={styles.columnHeader}>Aksi</Text>
+          </View>
+        }
         renderItem={({ item }) => (
           <View style={styles.tableRow}>
             <Text style={styles.tableCell}>{item.name}</Text>
             <Text style={styles.tableCell}>{item.email}</Text>
             <View style={styles.actions}>
               <Button title="Edit" onPress={() => editUser(item)} />
-              <Button title="Delete" onPress={() => deleteUser(item.id)} />
+              <Button title="Hapus" onPress={() => deleteUser(item.id)} />
             </View>
           </View>
         )}
       />
 
-      {/* Form input untuk Tambah/Edit User */}
+      {/* Form Tambah/Edit */}
       <TextInput
         style={styles.input}
         placeholder="Nama"
@@ -151,11 +153,11 @@ const Index = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#fff',
     padding: 20,
   },
   header: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 20,
   },
@@ -186,7 +188,7 @@ const styles = StyleSheet.create({
   actions: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: 150,
+    width: 130,
   },
   input: {
     height: 40,
