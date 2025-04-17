@@ -22,3 +22,29 @@ Go to backend folder and install dependencies:
 cd backend
 npm install
 ```
+Set up MySQL Database:
+```bash
+CREATE DATABASE name_db;
+CREATE TABLE users (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), email VARCHAR(100));
+```
+Configure backend API in config.js with your MySQL credentials.
+Start the backend server:
+```bash
+npm start
+```
+### 3. Frontend Setup:
+Go to frontend folder and install dependencies:
+```bash
+cd frontend
+npm install
+```
+Configure the API URL in .env file:
+```bash
+EXPO_PUBLIC_API_URL=http://localhost:3001
+```
+Start the React Native app:
+```bash
+npm start
+```
+### 4. Running the App:
+Scan the QR code with Expo Go on your phone, or use an emulator.
